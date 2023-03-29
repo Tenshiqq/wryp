@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
+import com.example.wryp.db.Constants;
+
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
@@ -33,81 +35,18 @@ public class MainActivity extends AppCompatActivity {
         textOutput = findViewById(R.id.textOutput);
 
 
-        String[] commands = {"/np", "/ep", "/sp", "/dp", "nday", "nmonday", "ntuesday", "nwednesday", "nthursday", "nfriday", "nsaturday", "nsunday", "nweek", "nmonth"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, commands);
-        inputText.setAdapter(adapter);
-        inputText.setTokenizer(new SpaceTokenizer());
-        inputText.setThreshold(1);
-
         inpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String sInput;
-                sInput = inputText.getText().toString();
-                String[] commands;
-                commands = sInput.split(" ");
-                if (commands[0].equals("/np")){
-                    textOutput.setText("create new plan");
-                }
+                textOutput.append(Constants.CREATE_TABLE_NOTES + "\n");
+                textOutput.append(Constants.DROP_TABLE_NOTES + "\n");
+                textOutput.append(Constants.CREATE_TABLE_TAGS + "\n");
+                textOutput.append(Constants.DROP_TABLE_TAGS + "\n");
             }
         });
-
     }
+
+
 
 }
-class SpaceTokenizer implements MultiAutoCompleteTextView.Tokenizer {
-    private int i;
 
-    // Returns the start of the token that ends at offset cursor within text.
-    public int findTokenStart(CharSequence inputText, int cursor) {
-        int idx = cursor;
-
-        while (idx > 0 && inputText.charAt(idx - 1) != ' ') {
-            idx--;
-        }
-        while (idx < cursor && inputText.charAt(idx) == ' ') {
-            idx++;
-        }
-        return idx;
-    }
-
-    // Returns the end of the token (minus trailing punctuation) that
-    // begins at offset cursor within text.
-    public int findTokenEnd(CharSequence inputText, int cursor) {
-        int idx = cursor;
-        int length = inputText.length();
-
-        while (idx < length) {
-            if (inputText.charAt(i) == ' ') {
-                return idx;
-            } else {
-                idx++;
-            }
-        }
-        return length;
-    }
-
-    // Returns text, modified, if necessary, to ensure that it ends with a token terminator
-    // (for example a space or comma).
-    public CharSequence terminateToken(CharSequence inputText) {
-        int idx = inputText.length();
-
-        while (idx > 0 && inputText.charAt(idx - 1) == ' ') {
-            idx--;
-        }
-
-        if (idx > 0 && inputText.charAt(idx - 1) == ' ') {
-            return inputText;
-        } else {
-            if (inputText instanceof Spanned) {
-                SpannableString sp = new SpannableString(inputText + " ");
-                TextUtils.copySpansFrom((Spanned) inputText, 0, inputText.length(),
-                        Object.class, sp, 0);
-                return sp;
-            } else {
-                return inputText + " ";
-            }
-        }
-    }
-}
