@@ -15,15 +15,18 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
 import com.example.wryp.db.Constants;
+import com.example.wryp.db.DBManager;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
+    private DBManager dbManager;
 
-    MultiAutoCompleteTextView inputText;
-    Button inpButton;
-    TextView textOutput;
+    private MultiAutoCompleteTextView inputText;
+    private Button inpButton;
+    private Button dropTable;
+    private TextView textOutput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,21 +35,48 @@ public class MainActivity extends AppCompatActivity {
 
         inputText = findViewById(R.id.inputText);
         inpButton = findViewById(R.id.inpButton);
+        dropTable = findViewById(R.id.dropTableTags);
         textOutput = findViewById(R.id.textOutput);
 
+        dbManager = new DBManager(this, Constants.TABLE_NAME_TAGS);
 
         inpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textOutput.append(Constants.CREATE_TABLE_NOTES + "\n");
-                textOutput.append(Constants.DROP_TABLE_NOTES + "\n");
-                textOutput.append(Constants.CREATE_TABLE_TAGS + "\n");
-                textOutput.append(Constants.DROP_TABLE_TAGS + "\n");
+                textOutput.setText("");
+//                dbManager.insertToDB(inputText.getText().toString());
+
+                for (String s : dbManager.getFromDB()) {
+                    textOutput.append(s + "\n");
+                }
+            }
+        });
+
+        dropTable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dbManager.dropTable();
+                textOutput.setText("");
             }
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        dbManager.openDB();
+        textOutput.setText("");
 
+        for (String s : dbManager.getFromDB()) {
+            textOutput.append(s + "\n");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbManager.closeDB();
+    }
 }
 
