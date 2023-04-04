@@ -2,10 +2,12 @@ package com.example.wryp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -21,6 +23,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
+    private Context context;
     private DBManager dbManager;
 
     private MultiAutoCompleteTextView inputText;
@@ -33,19 +36,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        context = this;
+
         inputText = findViewById(R.id.inputText);
         inpButton = findViewById(R.id.inpButton);
         dropTable = findViewById(R.id.dropTableTags);
         textOutput = findViewById(R.id.textOutput);
 
         dbManager = new DBManager(this, Constants.TABLE_NAME_TAGS);
+        Log.d(Constants.LOG_TAG, "onCreate: dbManager created");
 
         inpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textOutput.setText("");
-//                dbManager.insertToDB(inputText.getText().toString());
+                CommandLine cl = new CommandLine(context, textOutput.getText().toString());
 
+                textOutput.setText("");
                 for (String s : dbManager.getFromDB()) {
                     textOutput.append(s + "\n");
                 }
@@ -59,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 textOutput.setText("");
             }
         });
+
+        Log.d(Constants.LOG_TAG, "onCreate: zhivem");
     }
 
     @Override
@@ -71,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         for (String s : dbManager.getFromDB()) {
             textOutput.append(s + "\n");
         }
+        Log.d(Constants.LOG_TAG, "onResume: umerli");
     }
 
     @Override
