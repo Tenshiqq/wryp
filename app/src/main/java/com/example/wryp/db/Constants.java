@@ -21,16 +21,16 @@ public class Constants {
     public static final String TAG = "tag";
     public static final String DESCRIPTION = "description";
     public static final String CREATE_TABLE_NOTES = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME_NOTES + " (" +
-            ID + " INTEGER NOT NULL UNIQUE, " +
-            DATE + " TEXT, " +
+            ID + " INTEGER NOT NULL UNIQUE, \"" +
+            DATE + "\" TEXT, " +
             TAG + " INTEGER, " +
             DESCRIPTION + " TEXT, " +
-            "PRIMARY KEY(" + ID + " AUTOINCREMENT), " +
-            "FOREGIN KEY(" + TAG + ") REFERENCES " + TABLE_NAME_TAGS + "(" + TAG_ID + "));";
+            "FOREIGN KEY(" + TAG + ") REFERENCES " + TABLE_NAME_TAGS + "(" + TAG_ID + "), " +
+            "PRIMARY KEY(" + ID + " AUTOINCREMENT))";
     public static final String DROP_TABLE_NOTES = "DROP TABLE IF EXISTS " + TABLE_NAME_NOTES + ";";
 
-    public static final String COUNT_OF_TAGS_REQUEST = "SELECT COUNT(*) FROM " + TABLE_NAME_TAGS + " WHERE " + TAG_VALUE + " == ";
-    public static final String COUNT_OF_NOTES_REQUEST = "SELECT COUNT(*) FROM " + TABLE_NAME_NOTES + ";";
+    public static final String COUNT_OF_TAGS_REQUEST = "SELECT COUNT(*) FROM `" + TABLE_NAME_TAGS + "` WHERE " + TAG_VALUE + " == ";
+    public static final String COUNT_OF_NOTES_REQUEST = "SELECT COUNT(*) FROM `" + TABLE_NAME_NOTES + "`";
     public static final String FIND_REQUEST = "SELECT * FROM " + TABLE_NAME_TAGS + " WHERE " + TAG_VALUE + " == ";
     public static final String GET_FROM_NOTES_REQUEST = "SELECT " + DATE + ", " + TAG_VALUE + ", " + DESCRIPTION +
             " FROM " + TABLE_NAME_NOTES + " JOIN " + TABLE_NAME_TAGS + " ON " + TAG + " == " + TAG_ID + ";";

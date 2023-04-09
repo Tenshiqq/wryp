@@ -24,33 +24,18 @@ public class CommandLine {
         DBManager dbManager = new DBManager(context, Constants.TABLE_NAME_TAGS);
         this.context = context;
         this.commandsArray = input.split(" ");
+        Log.d(Constants.LOG_TAG, "CommandLine: " + Arrays.toString(commandsArray));
         this.command = commandsArray[0];
         this.date = commandsArray[1];
         this.textTag = commandsArray[2];
         this.desc = commandsArray[3];
         this.intTag = dbManager.convertTag(textTag);
+        Log.d(Constants.LOG_TAG, "CommandLine: " + intTag);
         Log.d(Constants.LOG_TAG, Arrays.toString(commandsArray));
 
         if (command.equals("/np")) {
             dbManager.insertToDB(date, intTag, desc);
         }
     }
-
-
-
-//    public int convertTag(String s) {
-//        DBManager dbManager = new DBManager(context, Constants.TABLE_NAME_TAGS);
-//
-//        if (dbManager.countOfTag(s) > 0) {
-//            Cursor cursor = dbManager.getDb().rawQuery(Constants.FIND_REQUEST + "\"" + s + "\";", null);
-//            return cursor.getInt(0);
-//        }
-//        else {
-//            dbManager.insertTagToDB(s);
-//
-//            Cursor cursor = dbManager.getDb().rawQuery(Constants.FIND_REQUEST + "\"" + s + "\";", null);
-//            return cursor.getInt(0);
-//        }
-//    }
 
 }

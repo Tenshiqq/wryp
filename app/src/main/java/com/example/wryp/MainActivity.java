@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         inpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommandLine cl = new CommandLine(context, textOutput.getText().toString());
+                CommandLine cl = new CommandLine(context, inputText.getText().toString());
 
                 textOutput.setText("");
                 for (String s : dbManager.getFromDB()) {

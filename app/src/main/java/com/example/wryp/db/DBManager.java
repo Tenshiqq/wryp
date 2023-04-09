@@ -34,6 +34,7 @@ public class DBManager {
         ContentValues cv = new ContentValues();
         cv.put(Constants.TAG_VALUE, tag);
         db.insert(Constants.TABLE_NAME_TAGS, null, cv);
+        Log.d(Constants.LOG_TAG, "insertTagToDB: yes");
     }
 
     public void insertToDB(String date, int tag, String description) {
@@ -41,11 +42,20 @@ public class DBManager {
 //        contentValues.put(Constants.TAG_VALUE, tag);
 //        db.insert(Constants.TABLE_NAME_TAGS, null, contentValues);
 
+        DBManager dbManager = new DBManager(context, Constants.TABLE_NAME_TAGS);
+        dbManager.openDB();
+
         ContentValues cv = new ContentValues();
-        cv.put(Constants.DATE, date);
-        cv.put(Constants.TAG, tag);
-        cv.put(Constants.DESCRIPTION, description);
-        db.insert(Constants.TABLE_NAME_NOTES, null, cv);
+        cv.put("`" + Constants.DATE + "`", date);
+        cv.put("`" +Constants.TAG + "`", tag);
+        cv.put("`" + Constants.DESCRIPTION + "`", description);
+        Log.d(Constants.LOG_TAG, "insertToDB: " + date + " " + tag  + " " +  description);
+        Log.d(Constants.LOG_TAG, "insertToDB: " + dbManager.getFromDB());
+        Log.d(Constants.LOG_TAG, "insertToDB: " + cv);
+        db.execSQL("INSERT INTO `notes`(`date`, `tag`, `description`) VALUES (\"" + date + "\", " + tag + ", \"" + description + "\")");
+//        db.insert(Constants.TABLE_NAME_NOTES, null, cv);
+        Log.d(Constants.LOG_TAG, "insertToDB: Insert successfully");
+        dbManager.closeDB();
     }
 
     public List<String> getFromDB() {
@@ -74,38 +84,54 @@ public class DBManager {
 
     public int countOfTag(String tag) {
         DBManager dbManager = new DBManager(context, Constants.TABLE_NAME_TAGS);
+        dbManager.openDB();
 
         Cursor cursor = dbManager.getDb().rawQuery(Constants.COUNT_OF_TAGS_REQUEST + "\"" + tag + "\";", null);
-        return cursor.getInt(0);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        dbManager.closeDB();
+        return count;
     }
 
     public int convertTag(String s) {
         DBManager dbManager = new DBManager(context, Constants.TABLE_NAME_TAGS);
+        dbManager.openDB();
 
         if (dbManager.countOfTag(s) > 0) {
-            Cursor cursor = dbManager.getDb().rawQuery(Constants.FIND_REQUEST + "\"" + s + "\";", null);
-            return cursor.getInt(0);
+            Cursor cursor = dbManager.getDb().rawQuery(Constants.FIND_REQUEST + "\"" + s + "\"", null);
+            cursor.moveToFirst();
+            int intTag = cursor.getInt(0);
+            cursor.close();
+            dbManager.closeDB();
+            return intTag;
         }
         else {
             dbManager.insertTagToDB(s);
 
-            Cursor cursor = dbManager.getDb().rawQuery(Constants.FIND_REQUEST + "\"" + s + "\";", null);
-            return cursor.getInt(0);
+            Cursor cursor = dbManager.getDb().rawQuery(Constants.FIND_REQUEST + "\"" + s + "\"", null);
+            cursor.moveToFirst();
+            int intTag = cursor.getInt(0);
+            cursor.close();
+            dbManager.closeDB();
+            return intTag;
         }
     }
 
     public boolean noteTableIsEmpty() {
         DBManager dbManager = new DBManager(context, Constants.TABLE_NAME_NOTES);
+        dbManager.openDB();
 
-        Log.d(Constants.LOG_TAG, "noteTableIsEmpty: before creating cursor");
-        Cursor cursor = dbManager.getDb().rawQuery(Constants.COUNT_OF_NOTES_REQUEST, null, null);
-        Log.d(Constants.LOG_TAG, "noteTableIsEmpty: cursor created");
+        Cursor cursor = dbManager.getDb().rawQuery(Constants.COUNT_OF_NOTES_REQUEST, null);
+        cursor.moveToFirst();
         if (cursor.getInt(0) > 0) {
-            Log.d(Constants.LOG_TAG, "noteTableIsEmpty: " + "true");
+            cursor.close();
+            dbManager.closeDB();
             return true;
         }
         else {
-            Log.d(Constants.LOG_TAG, "noteTableIsEmpty: " + "false");
+            cursor.close();
+            dbManager.closeDB();
             return false;
         }
     }
