@@ -32,6 +32,6 @@ public class Constants {
     public static final String COUNT_OF_TAGS_REQUEST = "SELECT COUNT(*) FROM `" + TABLE_NAME_TAGS + "` WHERE " + TAG_VALUE + " == ";
     public static final String COUNT_OF_NOTES_REQUEST = "SELECT COUNT(*) FROM `" + TABLE_NAME_NOTES + "`";
     public static final String FIND_REQUEST = "SELECT * FROM " + TABLE_NAME_TAGS + " WHERE " + TAG_VALUE + " == ";
-    public static final String GET_FROM_NOTES_REQUEST = "SELECT " + DATE + ", " + TAG_VALUE + ", " + DESCRIPTION +
+    public static final String GET_FROM_NOTES_REQUEST = "SELECT " + "`" +DATE + "`, " + TAG_VALUE + ", " + DESCRIPTION +
             " FROM " + TABLE_NAME_NOTES + " JOIN " + TABLE_NAME_TAGS + " ON " + TAG + " == " + TAG_ID + ";";
 }

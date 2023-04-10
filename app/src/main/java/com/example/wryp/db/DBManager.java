@@ -42,7 +42,7 @@ public class DBManager {
 //        contentValues.put(Constants.TAG_VALUE, tag);
 //        db.insert(Constants.TABLE_NAME_TAGS, null, contentValues);
 
-        DBManager dbManager = new DBManager(context, Constants.TABLE_NAME_TAGS);
+        DBManager dbManager = new DBManager(context, Constants.DB_NAME);
         dbManager.openDB();
 
         ContentValues cv = new ContentValues();
@@ -52,32 +52,36 @@ public class DBManager {
         Log.d(Constants.LOG_TAG, "insertToDB: " + date + " " + tag  + " " +  description);
         Log.d(Constants.LOG_TAG, "insertToDB: " + dbManager.getFromDB());
         Log.d(Constants.LOG_TAG, "insertToDB: " + cv);
-        db.execSQL("INSERT INTO `notes`(`date`, `tag`, `description`) VALUES (\"" + date + "\", " + tag + ", \"" + description + "\")");
-//        db.insert(Constants.TABLE_NAME_NOTES, null, cv);
+//        db.execSQL("INSERT INTO `notes`(`date`, `tag`, `description`) VALUES (\"" + date + "\", " + tag + ", \"" + description + "\")");
+        dbManager.getDb().insert(Constants.TABLE_NAME_NOTES, null, cv);
         Log.d(Constants.LOG_TAG, "insertToDB: Insert successfully");
         dbManager.closeDB();
     }
 
     public List<String> getFromDB() {
         Log.d(Constants.LOG_TAG, "getFromDB: zapustilis");
+        DBManager dbManager = new DBManager(context, Constants.DB_NAME);
+        dbManager.openDB();
+
         List<String> tempList = new ArrayList<>();
         if (noteTableIsEmpty()) {
-            Cursor cursor = db.rawQuery(Constants.GET_FROM_NOTES_REQUEST, null);
+            Cursor cursor = dbManager.getDb().rawQuery(Constants.GET_FROM_NOTES_REQUEST, null);
 
             while (cursor.moveToNext()) {
                 String tempString = "";
-                for (int i = 0; i <= 2; i++) {
-                    tempString += cursor.getString(i);
-                }
+
+                tempString += cursor.getString(0);
+                Log.d(Constants.LOG_TAG, "getFromDB: " + tempString);
+
                 tempList.add(tempString);
             }
 
             cursor.close();
-            Log.d(Constants.LOG_TAG, "getFromDB: zabrali");
+            Log.d(Constants.LOG_TAG, "if getFromDB: " + tempList);
             return tempList;
         }
         else {
-            Log.d(Constants.LOG_TAG, "getFromDB: list vernuli");
+            Log.d(Constants.LOG_TAG, "else getFromDB: " + tempList);
             return tempList;
         }
     }
